@@ -24,7 +24,43 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cz.cvut.kbss.jopa</groupId>
+            <artifactId>jopa-impl</artifactId>
+            <version>${cz.cvut.kbss.jopa.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cz.cvut.kbss.jopa</groupId>
+            <artifactId>ontodriver-sesame</artifactId>
+            <version>${cz.cvut.kbss.jopa.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ledsoft</groupId>
+            <artifactId>jopa-spring-transaction</artifactId>
+            <version>0.0.8</version>
+        </dependency>
 
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -73,6 +109,38 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <!-- Generate entity classes from OWL integrity constraints -->
+                <groupId>cz.cvut.kbss.jopa</groupId>
+                <artifactId>jopa-maven-plugin</artifactId>
+                <version>${cz.cvut.kbss.jopa.version}</version>
+                <configuration>
+                    <package>cz.cvut.kbss.reporting.model</package>
+                    <output-directory>${project.basedir}/src/main/generated-sources</output-directory>
+                    <ontology-iri>http://onto.fel.cvut.cz/ontologies/reporting-tool/model</ontology-iri>
+                    <mapping-file>${project.basedir}/src/main/resources/mapping</mapping-file>
+                    <whole-ontology-as-ics>true</whole-ontology-as-ics>
+                    <!--<context-name>eccairs-model</context-name>-->
+                    <vocabulary-only>true</vocabulary-only>
+                    <ignore-failed-imports>true</ignore-failed-imports>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>generate-vocabulary</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>owl2java-transform</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
         </plugins>
     </build>
 

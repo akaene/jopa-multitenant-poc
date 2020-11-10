@@ -1,0 +1,3 @@
+[submodule "inbas-model"]
+	path = inbas-model
+	url = https://bitbucket.org/akaene/inbas-model.git

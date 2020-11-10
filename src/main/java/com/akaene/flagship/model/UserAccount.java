@@ -3,9 +3,8 @@ package com.akaene.flagship.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.cvut.kbss.jopa.model.annotations.OWLClass;
 import cz.cvut.kbss.jopa.model.annotations.OWLDataProperty;
+import cz.cvut.kbss.reporting.model.Vocabulary;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.HashSet;
 
 @OWLClass(iri = Vocabulary.s_c_person)
 public class UserAccount extends AbstractPerson {
@@ -117,38 +116,5 @@ public class UserAccount extends AbstractPerson {
             throw new IllegalStateException("Disabled user account cannot be made an admin.");
         }
         addType(Vocabulary.s_c_admin);
-    }
-
-    /**
-     * Transforms this security-related {@code UserAccount} instance to a domain-specific {@code User} instance.
-     *
-     * @return new user instance based on this account
-     */
-    public Person toPerson() {
-        final Person user = new Person();
-        copyAttributes(user);
-        return user;
-    }
-
-    private void copyAttributes(cz.cvut.kbss.reporting.model.AbstractPerson target) {
-        target.setUri(uri);
-        target.setFirstName(firstName);
-        target.setLastName(lastName);
-        target.setUsername(username);
-        if (types != null) {
-            target.setTypes(new HashSet<>(types));
-        }
-    }
-
-    /**
-     * Returns a copy of this user account.
-     *
-     * @return This instance's copy
-     */
-    public UserAccount copy() {
-        final UserAccount clone = new UserAccount();
-        copyAttributes(clone);
-        clone.password = password;
-        return clone;
     }
 }

@@ -1,5 +1,5 @@
-http://onto.fel.cvut.cz/ontologies/reporting-tool/model > ../../inbas-model/vocabularies/reporting-tool/model.ttl
-http://onto.fel.cvut.cz/ontologies/documentation > ../../inbas-model/doc/documentation.rdf
-http://onto.fel.cvut.cz/ontologies/safety-management > ../../inbas-model/safety-management/safety-management.rdf
-http://onto.fel.cvut.cz/ontologies/arms/sira/model > ../../inbas-model/vocabularies/arms/model.ttl
-http://onto.fel.cvut.cz/ontologies/aviation/core > ../../inbas-model/core.rdf
+http://onto.fel.cvut.cz/ontologies/reporting-tool/model > ../../../inbas-model/vocabularies/reporting-tool/model.ttl
+http://onto.fel.cvut.cz/ontologies/documentation > ../../../inbas-model/doc/documentation.rdf
+http://onto.fel.cvut.cz/ontologies/safety-management > ../../../inbas-model/safety-management/safety-management.rdf
+http://onto.fel.cvut.cz/ontologies/arms/sira/model > ../../../inbas-model/vocabularies/arms/model.ttl
+http://onto.fel.cvut.cz/ontologies/aviation/core > ../../../inbas-model/core.rdf

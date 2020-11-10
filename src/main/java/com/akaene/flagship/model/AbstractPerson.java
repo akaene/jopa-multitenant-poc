@@ -1,10 +1,9 @@
 package com.akaene.flagship.model;
 
+import com.akaene.flagship.model.util.HasDerivableUri;
 import cz.cvut.kbss.jopa.model.annotations.*;
-import cz.cvut.kbss.reporting.model.util.HasDerivableUri;
-import cz.cvut.kbss.reporting.util.Constants;
+import cz.cvut.kbss.reporting.model.Vocabulary;
 
-import javax.validation.constraints.Email;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.HashSet;
@@ -25,7 +24,6 @@ public class AbstractPerson implements HasDerivableUri, Serializable {
     @OWLDataProperty(iri = Vocabulary.s_p_lastName)
     String lastName;
 
-    @Email
     @ParticipationConstraints(nonEmpty = true)
     @OWLDataProperty(iri = Vocabulary.s_p_accountName)
     String username;
@@ -103,7 +101,7 @@ public class AbstractPerson implements HasDerivableUri, Serializable {
     }
 
     /**
-     * Generates URI using {@link Constants#PERSON_BASE_URI} and the person's first and last name.
+     * Generates URI using {@link Vocabulary#s_c_person} and the person's first and last name.
      * <p>
      * If the URI is already set, nothing happens.
      */
@@ -119,7 +117,7 @@ public class AbstractPerson implements HasDerivableUri, Serializable {
         if (lastName == null || lastName.isEmpty()) {
             throw new IllegalStateException("Cannot generate Person URI without last name.");
         }
-        this.uri = URI.create(Constants.PERSON_BASE_URI + firstName + "+" + lastName);
+        this.uri = URI.create(Vocabulary.s_c_person + "/" + firstName + "+" + lastName);
     }
 
     /**

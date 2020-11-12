@@ -44,7 +44,7 @@ public abstract class BaseDao<T extends HasUri> implements GenericDao<T> {
     @Override
     public List<T> findAll() {
         try {
-            return em.createNativeQuery("SELECT e FROM " + type.getSimpleName() + " e", type).getResultList();
+            return em.createQuery("SELECT e FROM " + type.getSimpleName() + " e", type).getResultList();
         } catch (RuntimeException e) {
             throw new PersistenceException(e);
         }

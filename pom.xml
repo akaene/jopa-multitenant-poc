@@ -111,32 +111,6 @@
             </plugin>
 
             <plugin>
-                <!-- Generate entity classes from OWL integrity constraints -->
-                <groupId>cz.cvut.kbss.jopa</groupId>
-                <artifactId>jopa-maven-plugin</artifactId>
-                <version>${cz.cvut.kbss.jopa.version}</version>
-                <configuration>
-                    <package>cz.cvut.kbss.reporting.model</package>
-                    <output-directory>${project.basedir}/src/main/generated-sources</output-directory>
-                    <ontology-iri>http://onto.fel.cvut.cz/ontologies/reporting-tool/model</ontology-iri>
-                    <mapping-file>${project.basedir}/src/main/resources/mapping</mapping-file>
-                    <whole-ontology-as-ics>true</whole-ontology-as-ics>
-                    <!--<context-name>eccairs-model</context-name>-->
-                    <vocabulary-only>true</vocabulary-only>
-                    <ignore-failed-imports>true</ignore-failed-imports>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>generate-vocabulary</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>owl2java-transform</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <version>3.0.0</version>

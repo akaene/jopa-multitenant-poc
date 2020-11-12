@@ -2,7 +2,6 @@ package com.akaene.flagship.model;
 
 import com.akaene.flagship.model.util.HasDerivableUri;
 import cz.cvut.kbss.jopa.model.annotations.*;
-import cz.cvut.kbss.reporting.model.Vocabulary;
 
 import java.io.Serializable;
 import java.net.URI;
@@ -10,6 +9,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Namespace(prefix = "foaf", namespace = "http://xmlns.com/foaf/0.1/")
 @MappedSuperclass
 public class AbstractPerson implements HasDerivableUri, Serializable {
 
@@ -17,15 +17,15 @@ public class AbstractPerson implements HasDerivableUri, Serializable {
     URI uri;
 
     @ParticipationConstraints(nonEmpty = true)
-    @OWLDataProperty(iri = Vocabulary.s_p_firstName)
+    @OWLDataProperty(iri = "foaf:firstName")
     String firstName;
 
     @ParticipationConstraints(nonEmpty = true)
-    @OWLDataProperty(iri = Vocabulary.s_p_lastName)
+    @OWLDataProperty(iri = "foaf:lastName")
     String lastName;
 
     @ParticipationConstraints(nonEmpty = true)
-    @OWLDataProperty(iri = Vocabulary.s_p_accountName)
+    @OWLDataProperty(iri = "foaf:accountName", simpleLiteral = true)
     String username;
 
     @Types
@@ -33,8 +33,6 @@ public class AbstractPerson implements HasDerivableUri, Serializable {
 
     public AbstractPerson() {
         this.types = new HashSet<>(4);
-        // Person is an Agent
-        types.add(Vocabulary.s_c_agent);
     }
 
     @Override
@@ -101,7 +99,7 @@ public class AbstractPerson implements HasDerivableUri, Serializable {
     }
 
     /**
-     * Generates URI using {@link Vocabulary#s_c_person} and the person's first and last name.
+     * Generates URI using the person's first and last name.
      * <p>
      * If the URI is already set, nothing happens.
      */
@@ -117,7 +115,7 @@ public class AbstractPerson implements HasDerivableUri, Serializable {
         if (lastName == null || lastName.isEmpty()) {
             throw new IllegalStateException("Cannot generate Person URI without last name.");
         }
-        this.uri = URI.create(Vocabulary.s_c_person + "/" + firstName + "+" + lastName);
+        this.uri = URI.create(getClass().getAnnotation(OWLClass.class).iri() + "/" + firstName + "+" + lastName);
     }
 
     /**

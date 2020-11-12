@@ -35,7 +35,7 @@ public class UserAccountController {
         LOG.debug("Created user {}", account);
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "auth", produces = MediaType.APPLICATION_JSON_VALUE)
     public UserAccount getByUsername(@RequestParam String username) {
         final UserAccount result = accountService.findByUsername(username);
         if (result == null) {

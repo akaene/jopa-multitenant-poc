@@ -2,7 +2,6 @@ package com.akaene.flagship.service;
 
 import com.akaene.flagship.model.UserAccount;
 import com.akaene.flagship.persistence.dao.UserAccountDao;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,17 +13,13 @@ public class UserAccountService {
 
     private final UserAccountDao dao;
 
-    private final PasswordEncoder passwordEncoder;
-
-    public UserAccountService(UserAccountDao dao, PasswordEncoder passwordEncoder) {
+    public UserAccountService(UserAccountDao dao) {
         this.dao = dao;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     public void create(UserAccount account) {
         Objects.requireNonNull(account);
-        account.encodePassword(passwordEncoder);
         dao.persist(account);
     }
 

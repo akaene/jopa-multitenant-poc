@@ -4,9 +4,6 @@ import com.akaene.flagship.exception.PersistenceException;
 import com.akaene.flagship.model.util.EntityToOwlClassMapper;
 import com.akaene.flagship.model.util.HasUri;
 import cz.cvut.kbss.jopa.model.EntityManager;
-import cz.cvut.kbss.jopa.model.annotations.OWLClass;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.util.Collection;
@@ -17,8 +14,6 @@ import java.util.Objects;
  * Base implementation of the generic DAO.
  */
 public abstract class BaseDao<T extends HasUri> implements GenericDao<T> {
-
-    protected static final Logger LOG = LoggerFactory.getLogger(BaseDao.class);
 
     protected final EntityManager em;
 
@@ -118,9 +113,8 @@ public abstract class BaseDao<T extends HasUri> implements GenericDao<T> {
             return false;
         }
         try {
-            final String owlClass = type.getDeclaredAnnotation(OWLClass.class).iri();
             return em.createNativeQuery("ASK { ?individual a ?type . }", Boolean.class).setParameter("individual", uri)
-                     .setParameter("type", URI.create(owlClass)).getSingleResult();
+                     .setParameter("type", type).getSingleResult();
         } catch (RuntimeException e) {
             throw new PersistenceException(e);
         }

@@ -3,7 +3,6 @@ package com.akaene.flagship.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.cvut.kbss.jopa.model.annotations.OWLClass;
 import cz.cvut.kbss.jopa.model.annotations.OWLDataProperty;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @OWLClass(iri = "http://onto.fel.cvut.cz/ontologies/ufo/person")
 public class UserAccount extends AbstractPerson {
@@ -20,18 +19,6 @@ public class UserAccount extends AbstractPerson {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    /**
-     * Encodes password of this person.
-     *
-     * @param encoder Encoder to user to encode the password
-     */
-    public void encodePassword(PasswordEncoder encoder) {
-        if (password == null || password.isEmpty()) {
-            throw new IllegalStateException("Cannot encode an empty password.");
-        }
-        this.password = encoder.encode(password);
     }
 
     /**

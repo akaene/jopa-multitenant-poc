@@ -1,0 +1,12 @@
+{
+  "properties": [
+    {
+      "name": "repository.url",
+      "type": "java.lang.String",
+      "description": "URL of the main application repository."
+  }, {
+      "name": "driver",
+      "type": "java.lang.String",
+      "description": "Fully qualified class name of the OntoDriver data source class."
+    }
+] }

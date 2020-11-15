@@ -17,6 +17,8 @@ public class SecurityConstants {
      */
     public static final String JWT_ROLE_DELIMITER = "-";
 
+    public static final String TENANT_CLAIM = "Tenant";
+
     public static final String LOGIN_URL = "/login";
 
     public static final String USERNAME_PARAM = "username";
@@ -25,6 +27,10 @@ public class SecurityConstants {
      * Session timeout in milliseconds. 8 hours.
      */
     public static final int SESSION_TIMEOUT = 8 * 60 * 60 * 1000;
+    /**
+     * HTTP header indicating the user's tenant
+     */
+    public static final String TENANT_HEADER = "X-Tenant";
 
     private SecurityConstants() {
         throw new AssertionError();

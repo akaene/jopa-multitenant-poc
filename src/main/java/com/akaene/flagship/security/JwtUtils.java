@@ -63,6 +63,7 @@ public class JwtUtils {
                    .setIssuedAt(issued)
                    .setExpiration(new Date(issued.getTime() + SecurityConstants.SESSION_TIMEOUT))
                    .claim(SecurityConstants.JWT_ROLE_CLAIM, mapAuthoritiesToClaim(userDetails.getAuthorities()))
+                   .claim(SecurityConstants.TENANT_CLAIM, userDetails.getTenant())
                    .signWith(key, SIGNATURE_ALGORITHM)
                    .serializeToJsonWith(new JacksonSerializer<>(objectMapper))
                    .compact();
@@ -90,7 +91,9 @@ public class JwtUtils {
             user.setUri(URI.create(claims.getId()));
             user.setUsername(claims.getSubject());
             final String roles = claims.get(SecurityConstants.JWT_ROLE_CLAIM, String.class);
-            return new FlagshipUserDetails(user, mapClaimToAuthorities(roles));
+            final FlagshipUserDetails userDetails = new FlagshipUserDetails(user, mapClaimToAuthorities(roles));
+            userDetails.setTenant(URI.create(claims.get(SecurityConstants.TENANT_CLAIM, String.class)));
+            return userDetails;
         } catch (IllegalArgumentException e) {
             throw new JwtException("Unable to parse user identifier from the specified JWT.", e);
         }
@@ -119,6 +122,9 @@ public class JwtUtils {
         }
         if (claims.getExpiration() == null) {
             throw new TokenExpiredException("Missing token expiration info. Assuming expired.");
+        }
+        if (claims.get(SecurityConstants.TENANT_CLAIM) == null) {
+            throw new IncompleteJwtException("JWT is missing tenant information.");
         }
     }
 

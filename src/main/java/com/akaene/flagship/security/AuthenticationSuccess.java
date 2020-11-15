@@ -1,5 +1,6 @@
 package com.akaene.flagship.security;
 
+import com.akaene.flagship.security.model.FlagshipUserDetails;
 import com.akaene.flagship.security.model.LoginStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -34,7 +35,7 @@ public class AuthenticationSuccess implements AuthenticationSuccessHandler, Logo
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                                         Authentication authentication) throws IOException {
         final String username = getUsername(authentication);
-        LOG.trace("Successfully authenticated user {}", username);
+        LOG.trace("Successfully authenticated user '{}' under tenant '{}'", username, getTenant(authentication));
         final LoginStatus loginStatus = new LoginStatus(true, authentication.isAuthenticated(), username, null);
         mapper.writeValue(httpServletResponse.getOutputStream(), loginStatus);
     }
@@ -44,6 +45,13 @@ public class AuthenticationSuccess implements AuthenticationSuccessHandler, Logo
             return "";
         }
         return ((UserDetails) authentication.getDetails()).getUsername();
+    }
+
+    private String getTenant(Authentication authentication) {
+        if (authentication == null) {
+            return "";
+        }
+        return ((FlagshipUserDetails) authentication.getDetails()).getTenant().toString();
     }
 
     @Override

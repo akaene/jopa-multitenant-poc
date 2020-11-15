@@ -5,6 +5,7 @@ import com.akaene.flagship.dto.mapper.UserAccountMapper;
 import com.akaene.flagship.exception.ValidationException;
 import com.akaene.flagship.model.UserAccount;
 import com.akaene.flagship.service.repository.UserAccountRepositoryService;
+import com.akaene.flagship.service.security.SecurityUtils;
 import com.akaene.flagship.validation.ValidationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +48,9 @@ public class UserAccountService {
         return repositoryService.findAll().stream().map(mapper::userAccountToDto).collect(Collectors.toList());
     }
 
-    public UserAccountDto findByUsername(String username) {
-        return mapper.userAccountToDto(repositoryService.findByUsername(username));
+    public UserAccountDto getCurrent() {
+        return mapper.userAccountToDto(
+                repositoryService.findByUsername(SecurityUtils.getCurrentUserDetails().getUsername()));
     }
 
     /**

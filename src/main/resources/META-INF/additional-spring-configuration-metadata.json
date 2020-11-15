@@ -8,5 +8,10 @@
       "name": "driver",
       "type": "java.lang.String",
       "description": "Fully qualified class name of the OntoDriver data source class."
+    },
+    {
+      "name": "jwt.secretKey",
+      "type": "java.lang.String",
+      "description": "Secret key for JWT hashing."
     }
 ] }

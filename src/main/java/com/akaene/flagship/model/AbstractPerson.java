@@ -3,6 +3,8 @@ package com.akaene.flagship.model;
 import com.akaene.flagship.model.util.HasDerivableUri;
 import cz.cvut.kbss.jopa.model.annotations.*;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.HashSet;
@@ -16,14 +18,18 @@ public class AbstractPerson implements HasDerivableUri, Serializable {
     @Id
     URI uri;
 
+    @NotBlank
     @ParticipationConstraints(nonEmpty = true)
     @OWLDataProperty(iri = "foaf:firstName")
     String firstName;
 
+    @NotBlank
     @ParticipationConstraints(nonEmpty = true)
     @OWLDataProperty(iri = "foaf:lastName")
     String lastName;
 
+    @NotBlank
+    @Email
     @ParticipationConstraints(nonEmpty = true)
     @OWLDataProperty(iri = "foaf:accountName", simpleLiteral = true)
     String username;

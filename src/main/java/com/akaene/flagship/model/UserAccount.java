@@ -1,16 +1,17 @@
 package com.akaene.flagship.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.cvut.kbss.jopa.model.annotations.OWLClass;
 import cz.cvut.kbss.jopa.model.annotations.OWLDataProperty;
+import cz.cvut.kbss.jopa.model.annotations.ParticipationConstraints;
+
+import javax.validation.constraints.NotBlank;
 
 @OWLClass(iri = "http://onto.fel.cvut.cz/ontologies/ufo/person")
 public class UserAccount extends AbstractPerson {
 
-    // This means that password won't be sent to the client, but it is still possible to update it
-    // Because it will be deserialized when received in JSON from the client
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OWLDataProperty(iri = "http://onto.fel.cvut.cz/ontologies/reporting-tool/password")
+    @NotBlank
+    @ParticipationConstraints(nonEmpty = true)
+    @OWLDataProperty(iri = "http://onto.fel.cvut.cz/ontologies/reporting-tool/password", simpleLiteral = true)
     private String password;
 
     public String getPassword() {
@@ -28,5 +29,10 @@ public class UserAccount extends AbstractPerson {
      */
     public void erasePassword() {
         this.password = null;
+    }
+
+    @Override
+    public String toString() {
+        return "UserAccount{" + firstName + " " + lastName + "(" + username + ")<" + uri + ">}";
     }
 }

@@ -1,6 +1,6 @@
 package com.akaene.flagship.service.repository;
 
-import com.akaene.flagship.persistence.TenantPersistenceProvider;
+import com.akaene.flagship.persistence.tenant.TenantPersistenceProvider;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

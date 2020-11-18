@@ -1,5 +1,6 @@
 package com.akaene.flagship.persistence;
 
+import com.akaene.flagship.persistence.tenant.TenantPersistenceProvider;
 import cz.cvut.kbss.jopa.model.EntityManagerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

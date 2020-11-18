@@ -19,7 +19,7 @@ public class SecurityUtils {
                                                           .getDetails() instanceof FlagshipUserDetails) {
             return (FlagshipUserDetails) context.getAuthentication().getDetails();
         } else {
-            return null;
+            throw new RuntimeException("Unauthorized!");
         }
     }
 

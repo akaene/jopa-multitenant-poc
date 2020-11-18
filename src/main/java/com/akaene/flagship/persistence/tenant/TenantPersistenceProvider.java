@@ -1,5 +1,6 @@
-package com.akaene.flagship.persistence;
+package com.akaene.flagship.persistence.tenant;
 
+import com.akaene.flagship.service.security.SecurityUtils;
 import com.akaene.flagship.util.Constants;
 import cz.cvut.kbss.jopa.Persistence;
 import cz.cvut.kbss.jopa.model.EntityManager;
@@ -8,10 +9,11 @@ import cz.cvut.kbss.jopa.model.JOPAPersistenceProperties;
 import cz.cvut.kbss.jopa.model.JOPAPersistenceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +23,7 @@ import java.util.stream.Collectors;
 
 import static cz.cvut.kbss.jopa.model.JOPAPersistenceProperties.*;
 
-@Configuration
+@Component
 public class TenantPersistenceProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(TenantPersistenceProvider.class);
@@ -54,6 +56,10 @@ public class TenantPersistenceProvider {
 
     public EntityManagerFactory connectTo(String repoUrl) {
         Objects.requireNonNull(repoUrl);
+        if (emfs.containsKey(repoUrl)) {
+            LOG.warn("Already connected to <{}>.", repoUrl);
+            return emfs.get(repoUrl);
+        }
         LOG.info("Connecting to repository at <{}>.", repoUrl);
         final Map<String, String> properties = new HashMap<>(DEFAULT_PARAMS);
         properties.put(ONTOLOGY_PHYSICAL_URI_KEY, repoUrl);
@@ -80,6 +86,11 @@ public class TenantPersistenceProvider {
     public List<String> getConnectedRepositories() {
         return emfs.values().stream().map(emf -> emf.getProperties().get(ONTOLOGY_PHYSICAL_URI_KEY)).sorted()
                    .collect(Collectors.toList());
+    }
+
+    public EntityManagerFactory getEntityManagerFactory() {
+        final URI tenantUri = SecurityUtils.getCurrentUserDetails().getTenant();
+        return emfs.get(tenantUri.toString());
     }
 
     @PreDestroy

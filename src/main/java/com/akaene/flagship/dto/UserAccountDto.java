@@ -2,10 +2,11 @@ package com.akaene.flagship.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Set;
 
-public class UserAccountDto {
+public class UserAccountDto implements Serializable {
 
     URI uri;
 

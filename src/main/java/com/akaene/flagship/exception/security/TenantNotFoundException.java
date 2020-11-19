@@ -10,4 +10,8 @@ public class TenantNotFoundException extends AuthenticationException {
     public TenantNotFoundException() {
         super("Login request is missing tenant information.");
     }
+
+    public TenantNotFoundException(String msg) {
+        super(msg);
+    }
 }

@@ -27,6 +27,7 @@ public class UserAccountController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("permitAll()")
     public void createUser(@RequestBody UserAccountDto account) {
         accountService.create(account);
     }

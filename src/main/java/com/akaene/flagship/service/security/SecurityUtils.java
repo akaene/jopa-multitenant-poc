@@ -2,11 +2,32 @@ package com.akaene.flagship.service.security;
 
 import com.akaene.flagship.security.model.AuthenticationToken;
 import com.akaene.flagship.security.model.FlagshipUserDetails;
+import com.akaene.flagship.util.HttpUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.stereotype.Service;
 
+import java.net.URI;
+
+@Service
 public class SecurityUtils {
+
+    private final HttpUtils httpUtils;
+
+    public SecurityUtils(HttpUtils httpUtils) {
+        this.httpUtils = httpUtils;
+    }
+
+    public URI getCurrentTenant() {
+        final SecurityContext context = SecurityContextHolder.getContext();
+        if (context.getAuthentication() != null && context.getAuthentication()
+                                                          .getDetails() instanceof FlagshipUserDetails) {
+            return ((FlagshipUserDetails) context.getAuthentication().getDetails()).getTenant();
+        } else {
+            return httpUtils.resolveTenant();
+        }
+    }
 
     /**
      * Gets details of the currently authenticated user.

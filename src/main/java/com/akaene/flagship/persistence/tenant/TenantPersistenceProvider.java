@@ -1,5 +1,6 @@
 package com.akaene.flagship.persistence.tenant;
 
+import com.akaene.flagship.exception.security.TenantNotFoundException;
 import com.akaene.flagship.service.security.SecurityUtils;
 import com.akaene.flagship.util.Constants;
 import cz.cvut.kbss.jopa.Persistence;
@@ -13,7 +14,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,10 +32,13 @@ public class TenantPersistenceProvider {
 
     private final Environment environment;
 
+    private final SecurityUtils securityUtils;
+
     private final Map<String, EntityManagerFactory> emfs = new ConcurrentHashMap<>();
 
-    public TenantPersistenceProvider(Environment environment) {
+    public TenantPersistenceProvider(Environment environment, SecurityUtils securityUtils) {
         this.environment = environment;
+        this.securityUtils = securityUtils;
     }
 
     private static Map<String, String> initParams() {
@@ -77,7 +80,7 @@ public class TenantPersistenceProvider {
         try {
             final int size = em.createNativeQuery("SELECT (count(*) as ?cnt) WHERE {  ?x ?y ?z. }", Integer.class)
                                .getSingleResult();
-            LOG.debug("Connection successfully established. Repository contains {} statements.", size);
+            LOG.trace("Connection successfully established. Repository contains {} statements.", size);
         } finally {
             em.close();
         }
@@ -89,8 +92,11 @@ public class TenantPersistenceProvider {
     }
 
     public EntityManagerFactory getEntityManagerFactory() {
-        final URI tenantUri = SecurityUtils.getCurrentUserDetails().getTenant();
-        return emfs.get(tenantUri.toString());
+        final String tenantUri = securityUtils.getCurrentTenant().toString();
+        if (!emfs.containsKey(tenantUri)) {
+            throw new TenantNotFoundException("Tenant " + tenantUri + "not connected to any repository.");
+        }
+        return emfs.get(tenantUri);
     }
 
     @PreDestroy

@@ -35,7 +35,7 @@ public class AuthenticationSuccess implements AuthenticationSuccessHandler, Logo
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                                         Authentication authentication) throws IOException {
         final String username = getUsername(authentication);
-        LOG.trace("Successfully authenticated user '{}' under tenant '{}'", username, getTenant(authentication));
+        LOG.trace("Successfully authenticated user '{}' under tenant <{}>", username, getTenant(authentication));
         final LoginStatus loginStatus = new LoginStatus(true, authentication.isAuthenticated(), username, null);
         mapper.writeValue(httpServletResponse.getOutputStream(), loginStatus);
     }

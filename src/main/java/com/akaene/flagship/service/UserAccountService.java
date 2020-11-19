@@ -4,13 +4,13 @@ import com.akaene.flagship.dto.UserAccountDto;
 import com.akaene.flagship.dto.mapper.UserAccountMapper;
 import com.akaene.flagship.exception.ValidationException;
 import com.akaene.flagship.model.UserAccount;
+import com.akaene.flagship.service.repository.TenantService;
 import com.akaene.flagship.service.repository.UserAccountRepositoryService;
 import com.akaene.flagship.service.security.SecurityUtils;
 import com.akaene.flagship.validation.ValidationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Validator;
 import java.util.List;
@@ -28,18 +28,22 @@ public class UserAccountService {
 
     private final UserAccountRepositoryService repositoryService;
 
+    private final TenantService tenantService;
+
     public UserAccountService(Validator validator, UserAccountMapper mapper,
-                              UserAccountRepositoryService repositoryService) {
+                              UserAccountRepositoryService repositoryService,
+                              TenantService tenantService) {
         this.validator = validator;
         this.mapper = mapper;
         this.repositoryService = repositoryService;
+        this.tenantService = tenantService;
     }
 
-    @Transactional
     public void create(UserAccountDto account) {
         Objects.requireNonNull(account);
         final UserAccount entity = mapper.dtoToUserAccount(account);
         validate(entity);
+        tenantService.connectToTenantRepository();
         repositoryService.persist(entity);
         LOG.debug("Created user {}", entity);
     }

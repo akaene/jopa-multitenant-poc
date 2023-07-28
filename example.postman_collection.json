@@ -1,0 +1,315 @@
+{
+	"info": {
+		"_postman_id": "2e2f8e1c-f130-4b2c-85f7-e67effd30bd8",
+		"name": "JOPA Multitenant POC",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register user in Tenant One",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Tenant",
+						"value": "http://localhost:18080/rdf4j-server/repositories/saas-tenant-one",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"Catherine\",\n    \"lastName\": \"Halsey\",\n    \"username\": \"halsey@unsc.org\",\n    \"password\": \"a\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/flagship/rest/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"flagship",
+						"rest",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register user in Tenant Two",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Tenant",
+						"value": "http://localhost:18080/rdf4j-server/repositories/saas-tenant-two",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"Thomas\",\n    \"lastName\": \"Lasky\",\n    \"username\": \"lasky@unsc.org\",\n    \"password\": \"a\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/flagship/rest/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"flagship",
+						"rest",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login in Tenant One",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Tenant",
+						"value": "http://localhost:18080/rdf4j-server/repositories/saas-tenant-one",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "halsey@unsc.org",
+							"type": "default"
+						},
+						{
+							"key": "password",
+							"value": "a",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/flagship/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"flagship",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add report under tenant one",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TENANT_ONE_JWT}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Test report for tenant one\",\n    \"description\": \"Something happened, I do not know what.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/flagship/rest/reports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"flagship",
+						"rest",
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get reports in Tenant One",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TENANT_ONE_JWT}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/flagship/rest/reports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"flagship",
+						"rest",
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login in Tenant Two",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Tenant",
+						"value": "http://localhost:18080/rdf4j-server/repositories/saas-tenant-one",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "halsey@unsc.org",
+							"type": "default"
+						},
+						{
+							"key": "password",
+							"value": "a",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/flagship/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"flagship",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add report under tenant two",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TENANT_TWO_JWT}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Test report for tenant two\",\n    \"description\": \"Something happened, I do not know what. But it was something different than what hapenned in tenant one.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/flagship/rest/reports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"flagship",
+						"rest",
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get reports in Tenant Two",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TENANT_TWO_JWT}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/flagship/rest/reports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"flagship",
+						"rest",
+						"reports"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "TENANT_ONE_JWT",
+			"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYWxzZXlAdW5zYy5vcmciLCJqdGkiOiJodHRwOi8vb250by5mZWwuY3Z1dC5jei9vbnRvbG9naWVzL3Vmby9wZXJzb24vQ2F0aGVyaW5lK0hhbHNleSIsImlhdCI6MTY5MDU2MzA1MiwiZXhwIjoxNjkwNTkxODUyLCJyb2xlIjoiUk9MRV9VU0VSIiwiVGVuYW50IjoiaHR0cDovL2xvY2FsaG9zdDoxODA4MC9yZGY0ai1zZXJ2ZXIvcmVwb3NpdG9yaWVzL3NhYXMtdGVuYW50LW9uZSJ9.56z9YeIcWkw5iMZ9P8B1Nr1YgBY5aySrMJSsR_0my6A"
+		},
+		{
+			"key": "TENANT_TWO_JWT",
+			"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsYXNreUB1bnNjLm9yZyIsImp0aSI6Imh0dHA6Ly9vbnRvLmZlbC5jdnV0LmN6L29udG9sb2dpZXMvdWZvL3BlcnNvbi9UaG9tYXMrTGFza3kiLCJpYXQiOjE2OTA1NjMyOTMsImV4cCI6MTY5MDU5MjA5Mywicm9sZSI6IlJPTEVfVVNFUiIsIlRlbmFudCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MTgwODAvcmRmNGotc2VydmVyL3JlcG9zaXRvcmllcy9zYWFzLXRlbmFudC10d28ifQ.S5PKqjAyYWfOpDBJVzTnJ0-O1SPqX7xjWiUgW0Wn024"
+		}
+	]
+}

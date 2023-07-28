@@ -13,8 +13,7 @@ public class MultiTenantEntityManagerFactory implements EntityManagerFactory {
 
     private final TenantPersistenceProvider tenantPersistenceProvider;
 
-    public MultiTenantEntityManagerFactory(
-            TenantPersistenceProvider tenantPersistenceProvider) {
+    public MultiTenantEntityManagerFactory(TenantPersistenceProvider tenantPersistenceProvider) {
         this.tenantPersistenceProvider = tenantPersistenceProvider;
     }
 

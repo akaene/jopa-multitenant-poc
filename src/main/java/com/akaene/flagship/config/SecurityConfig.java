@@ -7,13 +7,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
@@ -27,7 +28,7 @@ import java.util.Collections;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
     private final AuthenticationProvider authenticationProvider;
 
@@ -43,8 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public SecurityConfig(AuthenticationProvider authenticationProvider,
                           AuthenticationSuccess authenticationSuccessHandler,
                           AuthenticationFailureHandler authenticationFailureHandler,
-                          JwtUtils jwtUtils,
-                          ObjectMapper objectMapper) {
+                          JwtUtils jwtUtils, ObjectMapper objectMapper) {
         this.authenticationProvider = authenticationProvider;
         this.authenticationSuccessHandler = authenticationSuccessHandler;
         this.authenticationFailureHandler = authenticationFailureHandler;
@@ -52,30 +52,33 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.objectMapper = objectMapper;
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(authenticationProvider);
-    }
-
     @Bean
     public HttpSessionListener httpSessionEventPublisher() {
         return new HttpSessionEventPublisher();
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        final AuthenticationManager authManager = buildAuthenticationManager(http);
         http.authorizeRequests().anyRequest().permitAll().and()
             .exceptionHandling()
             .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-            .and().cors().and().csrf().disable()
-            .addFilter(authenticationFilter())
-            .addFilter(new JwtAuthorizationFilter(authenticationManager(), jwtUtils, objectMapper))
+            .and().cors().configurationSource(corsConfigurationSource()).and().csrf().disable()
+            .authenticationManager(authManager)
+            .addFilter(authenticationFilter(authManager))
+            .addFilter(new JwtAuthorizationFilter(authManager, jwtUtils, objectMapper))
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        return http.build();
     }
 
-    @Bean
-    public JwtAuthenticationFilter authenticationFilter() throws Exception {
-        final JwtAuthenticationFilter authenticationFilter = new JwtAuthenticationFilter(authenticationManager(),
+    private AuthenticationManager buildAuthenticationManager(HttpSecurity http) throws Exception {
+        final AuthenticationManagerBuilder ab = http.getSharedObject(AuthenticationManagerBuilder.class);
+        ab.authenticationProvider(authenticationProvider);
+        return ab.build();
+    }
+
+    private JwtAuthenticationFilter authenticationFilter(AuthenticationManager authenticationManager) {
+        final JwtAuthenticationFilter authenticationFilter = new JwtAuthenticationFilter(authenticationManager,
                 jwtUtils);
         authenticationFilter.setFilterProcessesUrl(SecurityConstants.LOGIN_URL);
         authenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
@@ -83,8 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return authenticationFilter;
     }
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    private CorsConfigurationSource corsConfigurationSource() {
         // We're allowing all methods from all origins so that the application API is usable also by other clients
         // than just the UI.
         // This behavior can be restricted later.
